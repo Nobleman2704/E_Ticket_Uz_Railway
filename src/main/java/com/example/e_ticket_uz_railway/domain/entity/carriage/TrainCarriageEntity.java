@@ -1,4 +1,4 @@
-package com.example.e_ticket_uz_railway.domain.entity.train;
+package com.example.e_ticket_uz_railway.domain.entity.carriage;
 
 import com.example.e_ticket_uz_railway.domain.entity.seat.SeatEntity;
 import com.example.e_ticket_uz_railway.domain.entity.BaseEntity;
@@ -24,6 +24,6 @@ public class TrainCarriageEntity extends BaseEntity {
     @JoinColumn(name = "railway_id")
     private RailwayEntity railways;
 
-    @OneToMany(mappedBy = "trains")
+    @OneToMany(mappedBy = "carriages")
     private List<SeatEntity> seats;
 }
