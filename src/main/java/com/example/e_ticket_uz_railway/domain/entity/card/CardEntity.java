@@ -14,6 +14,7 @@ import lombok.*;
 @Builder
 @Entity(name = "cards")
 public class CardEntity extends BaseEntity {
+
     private String number;
     private double balance;
     @ManyToOne
