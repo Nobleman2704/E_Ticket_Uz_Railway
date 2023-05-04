@@ -1,4 +1,4 @@
-package com.example.e_ticket_uz_railway.domain.entity.train;
+package com.example.e_ticket_uz_railway.domain.entity.carriage;
 
 import com.example.e_ticket_uz_railway.domain.entity.seat.SeatEntity;
 import com.example.e_ticket_uz_railway.domain.entity.BaseEntity;
@@ -14,7 +14,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Entity(name = "trains")
+@Entity(name = "carriages")
 public class TrainCarriageEntity extends BaseEntity {
 
     @Column(name = "carriage_type")
@@ -24,6 +24,6 @@ public class TrainCarriageEntity extends BaseEntity {
     @JoinColumn(name = "railway_id")
     private RailwayEntity railways;
 
-    @OneToMany(mappedBy = "trains")
+    @OneToMany(mappedBy = "carriages")
     private List<SeatEntity> seats;
 }

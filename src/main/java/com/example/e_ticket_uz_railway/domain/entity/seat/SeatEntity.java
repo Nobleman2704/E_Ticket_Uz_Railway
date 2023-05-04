@@ -2,7 +2,7 @@ package com.example.e_ticket_uz_railway.domain.entity.seat;
 
 import com.example.e_ticket_uz_railway.domain.entity.BaseEntity;
 import com.example.e_ticket_uz_railway.domain.entity.ticket.TicketEntity;
-import com.example.e_ticket_uz_railway.domain.entity.train.TrainCarriageEntity;
+import com.example.e_ticket_uz_railway.domain.entity.carriage.TrainCarriageEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -19,6 +19,6 @@ public class SeatEntity extends BaseEntity {
     private List<TicketEntity> tickets;
 
     @ManyToOne
-    @JoinColumn(name = "train_carriage_id")
-    private TrainCarriageEntity trains;
+    @JoinColumn(name = "carriage_id")
+    private TrainCarriageEntity carriages;
 }
