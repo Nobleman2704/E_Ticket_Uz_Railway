@@ -1,8 +1,8 @@
 package com.example.e_ticket_uz_railway.domain.entity.carriage;
 
+import com.example.e_ticket_uz_railway.domain.entity.railwayFlight.RailwayFlightEntity;
 import com.example.e_ticket_uz_railway.domain.entity.seat.SeatEntity;
 import com.example.e_ticket_uz_railway.domain.entity.BaseEntity;
-import com.example.e_ticket_uz_railway.domain.entity.railway.RailwayEntity;
 import com.example.e_ticket_uz_railway.domain.enums.CarriageType;
 import jakarta.persistence.*;
 import lombok.*;
@@ -22,7 +22,7 @@ public class TrainCarriageEntity extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(name = "railway_id")
-    private RailwayEntity railways;
+    private RailwayFlightEntity railways;
 
     @OneToMany(mappedBy = "carriages")
     private List<SeatEntity> seats;
