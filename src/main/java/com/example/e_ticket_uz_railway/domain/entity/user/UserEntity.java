@@ -18,9 +18,7 @@ import java.util.List;
 @Entity(name = "users")
 public class UserEntity extends BaseEntity {
     private String name;
-
     private String email;
-
     private String password;
 
     @Column(name = "is_admin")

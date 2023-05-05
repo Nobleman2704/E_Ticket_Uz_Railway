@@ -15,6 +15,9 @@ import java.util.List;
 @Builder
 @Entity(name = "seats")
 public class SeatEntity extends BaseEntity {
+    @Column(name = "seat_number")
+    private int seatNumber;
+
     @OneToMany(mappedBy = "seats")
     private List<TicketEntity> tickets;
 
