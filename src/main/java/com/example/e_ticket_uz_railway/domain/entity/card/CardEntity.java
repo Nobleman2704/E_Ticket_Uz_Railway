@@ -14,8 +14,7 @@ import lombok.*;
 @Builder
 @Entity(name = "cards")
 public class CardEntity extends BaseEntity {
-
-    private String number;
+    private String cardNumber;
     private double balance;
     @ManyToOne
     @JoinColumn(name = "user_id")
