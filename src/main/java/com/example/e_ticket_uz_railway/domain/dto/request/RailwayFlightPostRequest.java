@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @AllArgsConstructor
@@ -13,5 +14,5 @@ import java.time.LocalDateTime;
 @Setter
 public class RailwayFlightPostRequest {
     private String railwayFlightName;
-    private LocalDateTime expirationDate;
+    private int duration;
 }

@@ -18,6 +18,8 @@ import java.util.List;
 @Entity(name = "users")
 public class UserEntity extends BaseEntity {
     private String name;
+
+    @Column(unique = true)
     private String email;
     private String password;
 

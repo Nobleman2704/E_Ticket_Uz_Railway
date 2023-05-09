@@ -7,7 +7,11 @@ import com.example.e_ticket_uz_railway.domain.dto.response.RailwayFlightGetRespo
 import com.example.e_ticket_uz_railway.domain.entity.railwayFlight.RailwayFlightEntity;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -22,10 +26,12 @@ public class RailwayFlightService implements BaseService<RailwayFlightPostReques
                 .existsRailwayFlightEntityByRailwayFlightName(railwayFlightPostRequest.getRailwayFlightName()))
             return BaseResponse.<RailwayFlightGetResponse>builder()
                     .status(400)
-                    .message(railwayFlightPostRequest.getRailwayFlightName() + " exists")
+                    .message(railwayFlightPostRequest.getRailwayFlightName() + " already exists")
                     .build();
 
         RailwayFlightEntity railwayFlight = modelMapper.map(railwayFlightPostRequest, RailwayFlightEntity.class);
+
+        railwayFlight.setExpirationDate(LocalDate.now().plusDays(railwayFlightPostRequest.getDuration()));
 
         railwayFlightDao.save(railwayFlight);
 
@@ -35,6 +41,24 @@ public class RailwayFlightService implements BaseService<RailwayFlightPostReques
                 .data(modelMapper.map(railwayFlight, RailwayFlightGetResponse.class))
                 .build();
     }
+
+    public BaseResponse<List<RailwayFlightGetResponse>> findAll() {
+        List<RailwayFlightEntity> railwayFlightEntities = railwayFlightDao.findAll();
+        if (railwayFlightEntities.isEmpty()){
+            return BaseResponse.<List<RailwayFlightGetResponse>>builder()
+                    .status(404)
+                    .message("There is not any railway flights")
+                    .build();
+        }
+
+        return BaseResponse.<List<RailwayFlightGetResponse>>builder()
+                .status(404)
+                .message(railwayFlightEntities.size() + " result(s) found")
+                .data(modelMapper.map(railwayFlightEntities, new TypeToken<List<RailwayFlightGetResponse>>(){}
+                        .getType()))
+                .build();
+    }
+
 
     @Override
     public BaseResponse<RailwayFlightGetResponse> getById(UUID id) {

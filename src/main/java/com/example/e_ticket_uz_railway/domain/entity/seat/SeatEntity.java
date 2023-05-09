@@ -24,4 +24,10 @@ public class SeatEntity extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "carriage_id")
     private TrainCarriageEntity carriages;
+
+    public SeatEntity(int seatNumber, TrainCarriageEntity carriages){
+        this.seatNumber = seatNumber;
+        this.carriages = carriages;
+    }
+
 }

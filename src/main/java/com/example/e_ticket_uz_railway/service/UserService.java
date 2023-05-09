@@ -21,17 +21,16 @@ public class UserService implements BaseService<UserPostRequest, BaseResponse<Us
 
     @Override
     public BaseResponse<UserGetResponse> create(UserPostRequest userPostRequest) {
-        Optional<UserEntity> userEntityByEmail = userDao.findUserEntityByEmail(userPostRequest.getEmail());
-        if (userEntityByEmail.isPresent())
+        UserEntity user = modelMapper.map(userPostRequest, UserEntity.class);
+
+        try {
+            userDao.save(user);
+        } catch (Exception e) {
             return BaseResponse.<UserGetResponse>builder()
                     .status(400)
                     .message(userPostRequest.getEmail() + " is exists")
                     .build();
-
-
-        UserEntity user = modelMapper.map(userPostRequest, UserEntity.class);
-
-        userDao.save(user);
+        }
 
         return BaseResponse.<UserGetResponse>builder()
                 .status(200)
@@ -51,13 +50,20 @@ public class UserService implements BaseService<UserPostRequest, BaseResponse<Us
 
         UserEntity user = userEntityByEmail.get();
 
-        if (Objects.equals(user.getPassword(), password))
+
+        if (Objects.equals(user.getPassword(), password)) {
+            if (user.isDeleted()) {
+                return BaseResponse.<UserGetResponse>builder()
+                        .status(401)
+                        .message("User is blocked")
+                        .build();
+            }
             return BaseResponse.<UserGetResponse>builder()
                     .status(200)
                     .data(modelMapper.map(user, UserGetResponse.class))
-                    .message("Success")
+                    .message("Successfully signed in")
                     .build();
-
+        }
 
         return BaseResponse.<UserGetResponse>builder()
                 .status(404)
