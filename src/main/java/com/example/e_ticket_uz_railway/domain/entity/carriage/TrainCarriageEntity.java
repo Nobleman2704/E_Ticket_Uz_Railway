@@ -17,6 +17,9 @@ import java.util.List;
 @Entity(name = "carriages")
 public class TrainCarriageEntity extends BaseEntity {
 
+    @Column(name = "carriage_number")
+    private int carriageNumber;
+
     @Column(name = "carriage_type")
     private CarriageType carriageType;
 
@@ -24,6 +27,6 @@ public class TrainCarriageEntity extends BaseEntity {
     @JoinColumn(name = "railway_id")
     private RailwayFlightEntity railways;
 
-    @OneToMany(mappedBy = "carriages")
+    @OneToMany(mappedBy = "carriages", cascade = CascadeType.ALL)
     private List<SeatEntity> seats;
 }

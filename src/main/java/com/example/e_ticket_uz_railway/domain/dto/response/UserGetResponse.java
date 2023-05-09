@@ -1,12 +1,16 @@
 package com.example.e_ticket_uz_railway.domain.dto.response;
 
-import jakarta.persistence.Column;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
-
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
 public class UserGetResponse {
     private UUID id;
     private LocalDateTime created;
