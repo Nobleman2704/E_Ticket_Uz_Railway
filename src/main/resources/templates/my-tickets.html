@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My tickets</title>
+  <style>
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      color: #333;
+      font-family: Arial, sans-serif;
+      font-size: 14px;
+      text-align: left;
+      background-color: #f2f2f2;
+    }
+
+    table th {
+      background-color: #3b3e40;
+      color: #fff;
+      padding: 8px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      border: 1px solid #ddd;
+    }
+
+    table td {
+      padding: 8px;
+      border: 1px solid #ddd;
+    }
+  </style>
+</head>
+<body style="background-color: lightblue">
+<table>
+  <thead>
+  <tr>
+    <th>From</th>
+    <th></th>
+    <th>To</th>
+    <th>Begin</th>
+    <th>End</th>
+    <th>Duration</th>
+    <th>Price</th>
+    <th>Seat Number</th>
+    <th>Carriage Type</th>
+  </tr>
+  </thead>
+  <tbody th:each="ticket: ${tickets}">
+  <tr>
+    <td th:text="${ticket.cityFrom}"></td>
+    <td>➡️➡️</td>
+    <td th:text="${ticket.cityTo}"></td>
+    <td th:text="${ticket.dateBegin}"></td>
+    <td th:text="${ticket.dateEnd}"></td>
+    <td th:text="${ticket.travelDuration}"></td>
+    <td th:text="${ticket.travelPrice}"></td>
+    <td th:text="${ticket.seats.seatNumber}"></td>
+    <td th:text="${ticket.seats.carriages.carriageType}"></td>
+  </tr>
+  </tbody>
+</table>
+</body>
+</html>
