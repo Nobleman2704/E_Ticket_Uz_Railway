@@ -56,17 +56,6 @@ public class AuthController {
         return modelAndView;
     }
 
-    @PostMapping("/admin")
-    public ModelAndView admin(){
-        return new ModelAndView("admin-page");
-    }
-    @PostMapping("/user")
-    public ModelAndView user(){
-        return new ModelAndView("user-page");
-    }
-
-
-
     @GetMapping("/log")
     public ModelAndView jumpLogin(){
         return new ModelAndView("login");
