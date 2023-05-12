@@ -66,7 +66,7 @@
 
 <div class="container">
     <h2>Sign In</h2>
-    <form action="/login" method="post">
+    <form th:action="@{/auth/login}" method="post">
         <input type="email" required placeholder="email" name="email"><br>
         <input type="password" required placeholder="password" name="password"><br>
         <button>Sign in</button>
