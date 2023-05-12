@@ -4,10 +4,7 @@ import com.example.e_ticket_uz_railway.domain.entity.seat.SeatEntity;
 import com.example.e_ticket_uz_railway.domain.entity.BaseEntity;
 import com.example.e_ticket_uz_railway.domain.entity.user.UserEntity;
 import com.example.e_ticket_uz_railway.domain.enums.CityName;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -28,16 +25,21 @@ public class TicketEntity extends BaseEntity {
     @JoinColumn(name = "seat_id")
     private SeatEntity seats;
 
+    @Column(name = "travel_price")
+    private Double travelPrice;
+
+    @Enumerated(EnumType.STRING)
     @Column(name = "city_from")
     private CityName cityFrom;
     @Column(name = "city_from_number")
     private int cityFromNumber;
+    @Enumerated(EnumType.STRING)
     @Column(name = "city_to")
     private CityName cityTo;
     @Column(name = "city_to_number")
     private int cityToNumber;
     @Column(name = "travel_duration")
-    private LocalTime travelDuration;
+    private String travelDuration;
     @Column(name = "date_begin")
     private LocalDateTime dateBegin;
     //for dateBegin : currentDate merge travel.begin.time

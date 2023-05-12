@@ -20,6 +20,7 @@ public class TrainCarriageEntity extends BaseEntity {
     @Column(name = "carriage_number")
     private int carriageNumber;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "carriage_type")
     private CarriageType carriageType;
 

@@ -69,13 +69,14 @@ public class CardService implements BaseService<CardPostRequest, BaseResponse<Ca
                 .build();
     }
 
-    private BaseResponse<List<CardGetResponse>> getMyCardsById(UUID userId) {
+    public BaseResponse<List<CardGetResponse>> getMyCardsById(UUID userId) {
         Optional<List<CardEntity>> optionalCardEntities = cardDao.findCardEntitiesByUsersId(userId);
-        if (optionalCardEntities.isEmpty())
+        if (optionalCardEntities.get().size()==0){
             return BaseResponse.<List<CardGetResponse>>builder()
                     .status(404)
                     .message("You do not have cards")
                     .build();
+        }
         List<CardEntity> cardEntities = optionalCardEntities.get();
 
         return BaseResponse.<List<CardGetResponse>>builder()

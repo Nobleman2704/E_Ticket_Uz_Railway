@@ -3,10 +3,7 @@ package com.example.e_ticket_uz_railway.domain.entity.travel;
 import com.example.e_ticket_uz_railway.domain.entity.BaseEntity;
 import com.example.e_ticket_uz_railway.domain.entity.railwayFlight.RailwayFlightEntity;
 import com.example.e_ticket_uz_railway.domain.enums.CityName;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDateTime;
 
@@ -17,10 +14,12 @@ import java.time.LocalDateTime;
 @Builder
 @Entity(name = "travels")
 public class TravelEntity extends BaseEntity {
+    @Enumerated(EnumType.STRING)
     @Column(name = "city_from")
     private CityName cityFrom;
     @Column(name = "city_from_number")
     private int cityFromNumber;
+    @Enumerated(EnumType.STRING)
     @Column(name = "city_to")
     private CityName cityTo;
     @Column(name = "city_to_number")

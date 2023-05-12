@@ -11,6 +11,7 @@ import lombok.*;
 import java.time.LocalDate;
 
 import java.util.LinkedList;
+import java.util.List;
 
 @Setter
 @Getter
@@ -25,8 +26,8 @@ public class RailwayFlightEntity extends BaseEntity {
     private LocalDate expirationDate;
 
     @OneToMany(mappedBy = "railways")
-    private LinkedList<TravelEntity> travels;
+    private List<TravelEntity> travels;
 
     @OneToMany(mappedBy = "railways")
-    private LinkedList<TrainCarriageEntity> trainCarriages;
+    private List<TrainCarriageEntity> trainCarriages;
 }
