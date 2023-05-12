@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Choose card</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            color: #333;
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+            text-align: left;
+            background-color: #f2f2f2;
+        }
+
+        table th {
+            background-color: #3b3e40;
+            color: #fff;
+            padding: 8px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            border: 1px solid #ddd;
+        }
+
+        table td {
+            padding: 8px;
+            border: 1px solid #ddd;
+        }
+        button {
+            background-color: chocolate;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 15px;
+            font-size: 16px;
+            cursor: pointer;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+        }
+        a {
+            text-decoration: none;
+            color: white;
+        }
+        .fixed {
+            margin-left: 85%;
+            margin-top: -10%;
+        }
+    </style>
+</head>
+<body style="background-color: lightblue">
+<h1 style="margin-left: 40%">Choose card</h1>
+
+<table>
+    <thead>
+        <tr>
+            <th>Card Number</th>
+            <th>Balance</th>
+            <th>Choose</th>
+        </tr>
+    </thead>
+    <tbody th:each="card: ${cards}">
+        <tr>
+            <td th:text="${card.cardNumber}"></td>
+            <td th:text="${card.balance}"></td>
+            <td>
+                <!--/*@thymesVar id="ticket" type="com.example.e_ticket_uz_railway.domain.dto.request.TicketPostRequest"*/-->
+                <form action="/user/book_seat" method="post" th:object="${ticket}">
+                    <input type="hidden" th:value="${search.cityFrom}" name="cityFrom">
+                    <input type="hidden" th:value="${search.cityTo}" name="cityTo">
+                    <input type="hidden" th:value="${search.localDate}" name="localDate">
+                    <input type="hidden" name="seatId" th:value="${seatId}">
+                    <input type="hidden" name="cardId" th:value="${card.id}">
+                    <input type="hidden" name="travelPrice" th:value="${travelPrice}">
+                    <button>Choose</button>
+                </form>
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+<div class="fixed">
+    <button style="background-color: darkgoldenrod">
+        <a th:href="@{/user/get_user_cards}">Your cards</a>
+    </button>
+</div>
+</body>
+</html>

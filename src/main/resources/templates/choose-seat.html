@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Choose seat</title>
+    <style>
+        button {
+            background-color: dodgerblue;
+            color: #fff;
+            padding: 15px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 20px;
+            cursor: pointer;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+        }
+        form {
+            display: inline-block;
+        }
+    </style>
+</head>
+<body style="background-color: lightblue">
+<h1 style="margin-left: 40%">Choose a seat</h1>
+<br>
+
+<th:block th:each="seat: ${seats}">
+<form action="/user/choose_card" method="get" th:object="${searchTravel}">
+    <input type="hidden" th:value="${search.cityFrom}" name="cityFrom">
+    <input type="hidden" th:value="${search.cityTo}" name="cityTo">
+    <input type="hidden" th:value="${search.localDate}" name="localDate">
+    <input type="hidden" name="travelPrice" th:value="${travelPrice}">
+    <input type="hidden" name="seatId" th:value="${seat.id}">
+    <button><b th:text="${seat.seatNumber}"></b></button>
+</form>
+</th:block>
+</body>
+</html>
