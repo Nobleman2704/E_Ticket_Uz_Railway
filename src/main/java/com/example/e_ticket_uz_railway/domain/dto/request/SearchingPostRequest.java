@@ -1,10 +1,7 @@
 package com.example.e_ticket_uz_railway.domain.dto.request;
 
 import com.example.e_ticket_uz_railway.domain.enums.CityName;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDate;
 
@@ -12,6 +9,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @Getter
 @Setter
+@Builder
 public class SearchingPostRequest {
     private CityName cityFrom;
     private CityName cityTo;

@@ -14,6 +14,7 @@ import com.example.e_ticket_uz_railway.domain.enums.CarriageType;
 import com.example.e_ticket_uz_railway.domain.enums.CityName;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
@@ -92,10 +93,19 @@ public class TravelService implements BaseService<TravelPostRequest, BaseRespons
 
     private boolean isTravelValid(TravelEntity travelEntity) {
         CityName cityTo = travelEntity.getCityTo();
+        CityName cityFrom = travelEntity.getCityFrom();
         LocalDateTime dateEnd = travelEntity.getDateEnd();
         LocalDateTime dateBegin = travelEntity.getDateBegin();
 
-        if (dateBegin.isAfter(dateEnd)) {
+        if (dateBegin.isBefore(LocalDateTime.now())){
+            return false;
+        }
+
+        if (Objects.equals(cityFrom, cityTo)){
+            return false;
+        }
+
+        if (dateBegin.isAfter(dateEnd) || Objects.equals(dateEnd, dateBegin)) {
             return false;
         }
 
@@ -105,7 +115,8 @@ public class TravelService implements BaseService<TravelPostRequest, BaseRespons
             return false;
         }
 
-        LinkedList<TravelEntity> travels = railways.getTravels();
+        LinkedList<TravelEntity> travels = travelDao
+                .findTravelEntitiesByRailwaysIdOrderByCreated(railways.getId()).get();
 
         for (TravelEntity travel : travels) {
             if (Objects.equals(travel.getCityFrom(), cityTo)
@@ -164,18 +175,33 @@ public class TravelService implements BaseService<TravelPostRequest, BaseRespons
 
     private Optional<TravelGetResponse> findTravel(SearchingPostRequest searchingPostRequest, UUID railwayId) {
 
-        List<TravelEntity> travelEntities = travelDao.findTravelEntitiesByRailwaysIdOrderByCreated(railwayId).get();
+        LocalDate localDate = searchingPostRequest.getLocalDate();
 
-        Map<String, Object> travelInfo = existsRailwayFlightTravelBySearching(searchingPostRequest, travelEntities);
+        Optional<LinkedList<TravelEntity>> optionalTravelEntities = travelDao
+                .findTravelEntitiesByRailwaysIdOrderByCreated(railwayId);
 
+        LocalDate expirationDate = railwayFlightDao.findById(railwayId).get().getExpirationDate();
 
+        if (localDate.isAfter(expirationDate)){
+            return Optional.empty();
+        }
 
-        if (travelInfo.isEmpty()) {
+        if (optionalTravelEntities.isEmpty()){
+            return Optional.empty();
+        }
+
+        Optional<List<TrainCarriageEntity>> optionalCarriages = carriageDao
+                .findTrainCarriageEntitiesByRailwaysIdOrderByCreated(railwayId);
+
+        Map<String, Object> travelInfo = existsRailwayFlightTravelBySearching(searchingPostRequest,
+                optionalTravelEntities.get());
+
+        if (travelInfo.isEmpty() || optionalCarriages.isEmpty()) {
             return Optional.empty();
         }
 
         List<TrainCarriageEntity> carriageEntityList = carriageDao
-                .findTrainCarriageEntitiesByRailwaysId(railwayId).get();
+                .findTrainCarriageEntitiesByRailwaysIdOrderByCreated(railwayId).get();
 
         int plascardSeatCount = 0;
         int kupeSeatCount = 0;
@@ -185,7 +211,7 @@ public class TravelService implements BaseService<TravelPostRequest, BaseRespons
             CarriageType carriageType = carriageEntity.getCarriageType();
             int seatCount = findAvailableSeats(travelInfo, carriageEntity.getId()).size();
             switch (carriageType) {
-                case PLASKARD -> plascardSeatCount += seatCount;
+                case PLASCARD -> plascardSeatCount += seatCount;
                 case KUPE -> kupeSeatCount += seatCount;
                 default -> vipSeatCount += seatCount;
             }
@@ -199,12 +225,12 @@ public class TravelService implements BaseService<TravelPostRequest, BaseRespons
                 .cityTo(searchingPostRequest.getCityTo())
                 .dateBegin((LocalDateTime) travelInfo.get("beginTime"))
                 .dateEnd((LocalDateTime) travelInfo.get("endTime"))
-                .timeDuration((LocalTime) travelInfo.get("duration"))
+                .timeDuration((String) travelInfo.get("duration"))
                 .railways(railwayFlightDao.findById(railwayId).get())
                 .plascardPrice((Double) travelInfo.get("plascardPrice"))
                 .kupePrice((Double) travelInfo.get("kupePrice"))
                 .vipPrice((Double) travelInfo.get("vipPrice"))
-                .plascardSearAmount(plascardSeatCount)
+                .plascardSeatAmount(plascardSeatCount)
                 .kupeSeatAmount(kupeSeatCount)
                 .vipSeatAmount(vipSeatCount)
                 .build());
@@ -222,7 +248,7 @@ public class TravelService implements BaseService<TravelPostRequest, BaseRespons
             }
         }
 
-        return seatEntities;
+        return availableSeats;
     }
 
     private boolean isSeatNotBooked(Map<String, Object> travelInfo,
@@ -247,14 +273,19 @@ public class TravelService implements BaseService<TravelPostRequest, BaseRespons
 
         int sCityFromNumber = (int) travelInfo.get("numberOfCityFrom");
         int sCityToNumber = (int) travelInfo.get("numberOfCityTo");
-        LocalDateTime sBeginTime = (LocalDateTime) travelInfo.get("beginTime");
+        LocalDateTime sBeginDateTime = (LocalDateTime) travelInfo.get("beginTime");
+        LocalDate sBeginTime = LocalDate.from(sBeginDateTime);
 
         int tCityFromNumber = ticketEntity.getCityFromNumber();
         int tCityToNumber = ticketEntity.getCityToNumber();
-        LocalDateTime tBeginTime = ticketEntity.getDateBegin();
+        LocalDate tBeginTime = LocalDate.from(ticketEntity.getDateBegin());
 
-        return !((sCityToNumber <= tCityFromNumber ||
-                sCityFromNumber >= tCityToNumber) && !sBeginTime.equals(tBeginTime));
+        if ((sCityToNumber <= tCityFromNumber ||
+                sCityFromNumber >= tCityToNumber)){
+            return false;
+        }
+
+        return sBeginTime.equals(tBeginTime);
     }
 
     public Map<String, Object> existsRailwayFlightTravelBySearching(SearchingPostRequest searchingPostRequest,
@@ -291,9 +322,7 @@ public class TravelService implements BaseService<TravelPostRequest, BaseRespons
                 LocalDateTime tEndTime = travelEntity.getDateEnd();
                 Duration duration = Duration.between(tBeginTime, tEndTime);
 
-                LocalTime timeDuration = LocalTime.of((int) duration.toHours(),
-                        (int) (duration.toMinutes() % 60),
-                        (int) (duration.toSeconds() % 60));
+                String timeDuration = ((duration.toHours()/24!=0)?(duration.toHours()/24+" day "):"") + "" + (int)(duration.toHours()%24) + ":"+(int)(duration.toMinutes()%60);
 
                 LocalDateTime endTime = beginTime.plus(duration);
 
@@ -318,5 +347,16 @@ public class TravelService implements BaseService<TravelPostRequest, BaseRespons
     @Override
     public BaseResponse<TravelGetResponse> deleteById(UUID id) {
         return null;
+    }
+
+    public List<TravelGetResponse> findTravelsByRailwayFlightId(UUID railwayFlightId) {
+        Optional<LinkedList<TravelEntity>> optionalTravelEntities = travelDao
+                .findTravelEntitiesByRailwaysIdOrderByCreated(railwayFlightId);
+
+        if (optionalTravelEntities.isEmpty()){
+            return Collections.emptyList();
+        }
+        return modelMapper.map(optionalTravelEntities.get(), new TypeToken<LinkedList<TravelGetResponse>>(){}
+                .getType());
     }
 }

@@ -17,7 +17,9 @@ import java.util.UUID;
 public class TravelPostRequest {
     private CityName cityFrom;
     private CityName cityTo;
-    private Double travelPrice;
+    private Double vipPrice;
+    private Double kupePrice;
+    private Double plascardPrice;
     private LocalDateTime dateBegin;
     private LocalDateTime dateEnd;
     private UUID railwayId;

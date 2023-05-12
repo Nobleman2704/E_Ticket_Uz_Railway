@@ -16,6 +16,7 @@ public class UserGetResponse {
     private LocalDateTime created;
     private LocalDateTime updated;
     private boolean isDeleted;
+    private boolean isAdmin;
     private String name;
     private String email;
     private String password;

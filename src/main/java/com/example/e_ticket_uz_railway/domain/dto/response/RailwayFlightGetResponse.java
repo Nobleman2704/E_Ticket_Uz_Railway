@@ -2,11 +2,13 @@ package com.example.e_ticket_uz_railway.domain.dto.response;
 
 import com.example.e_ticket_uz_railway.domain.entity.carriage.TrainCarriageEntity;
 import com.example.e_ticket_uz_railway.domain.entity.travel.TravelEntity;
+import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.UUID;
@@ -21,7 +23,5 @@ public class RailwayFlightGetResponse {
     private LocalDateTime updated;
     private boolean isDeleted;
     private String railwayFlightName;
-    private LocalDateTime expirationDate;
-    private LinkedList<TrainCarriageEntity> trainCarriages;
-    private LinkedList<TravelEntity> travels;
+    private LocalDate expirationDate;
 }

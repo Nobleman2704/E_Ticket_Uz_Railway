@@ -28,7 +28,7 @@ public class UserService implements BaseService<UserPostRequest, BaseResponse<Us
         } catch (Exception e) {
             return BaseResponse.<UserGetResponse>builder()
                     .status(400)
-                    .message(userPostRequest.getEmail() + " is exists")
+                    .message(userPostRequest.getEmail() + " already exists")
                     .build();
         }
 

@@ -3,8 +3,7 @@ package com.example.e_ticket_uz_railway.service;
 import com.example.e_ticket_uz_railway.dao.*;
 import com.example.e_ticket_uz_railway.domain.dto.BaseResponse;
 import com.example.e_ticket_uz_railway.domain.dto.request.SearchingPostRequest;
-import com.example.e_ticket_uz_railway.domain.dto.request.TicketPurchasePostRequest;
-import com.example.e_ticket_uz_railway.domain.dto.response.CardGetResponse;
+import com.example.e_ticket_uz_railway.domain.dto.request.TicketPostRequest;
 import com.example.e_ticket_uz_railway.domain.dto.response.TicketGetResponse;
 import com.example.e_ticket_uz_railway.domain.entity.card.CardEntity;
 import com.example.e_ticket_uz_railway.domain.entity.seat.SeatEntity;
@@ -48,9 +47,9 @@ public class TicketService implements BaseService<TicketEntity, BaseResponse<Tic
                 .build();
     }
 
-    public BaseResponse<TicketGetResponse> bookSeat(TicketPurchasePostRequest ticketPurchasePostRequest){
-        UUID cardId = ticketPurchasePostRequest.getCardId();
-        Double travelPrice = ticketPurchasePostRequest.getTravelPrice();
+    public BaseResponse<TicketGetResponse> bookSeat(TicketPostRequest ticketPostRequest){
+        UUID cardId = ticketPostRequest.getCardId();
+        Double travelPrice = ticketPostRequest.getTravelPrice();
 
         CardEntity cardEntity = cardDao.findById(cardId).get();
         if (cardEntity.getBalance()<travelPrice){
@@ -63,7 +62,7 @@ public class TicketService implements BaseService<TicketEntity, BaseResponse<Tic
 
         UserEntity userEntity = cardEntity.getUsers();
 
-        UUID seatId = ticketPurchasePostRequest.getSeatId();
+        UUID seatId = ticketPostRequest.getSeatId();
         SeatEntity seatEntity = seatDao.findById(seatId).get();
 
         UUID railwayId = seatEntity.getCarriages().getRailways().getId();
@@ -71,7 +70,13 @@ public class TicketService implements BaseService<TicketEntity, BaseResponse<Tic
         LinkedList<TravelEntity> travelEntities = travelDao
                 .findTravelEntitiesByRailwaysIdOrderByCreated(railwayId).get();
 
-        SearchingPostRequest searchingInfo = ticketPurchasePostRequest.getSearchingInfo();
+
+
+        SearchingPostRequest searchingInfo = SearchingPostRequest.builder()
+                .cityFrom(ticketPostRequest.getCityFrom())
+                .cityTo(ticketPostRequest.getCityTo())
+                .localDate(ticketPostRequest.getLocalDate())
+                .build();
         Map<String, Object> travelInfo = travelService
                 .existsRailwayFlightTravelBySearching(searchingInfo, travelEntities);
 
@@ -88,7 +93,8 @@ public class TicketService implements BaseService<TicketEntity, BaseResponse<Tic
                 .cityToNumber((Integer) travelInfo.get("numberOfCityTo"))
                 .dateBegin((LocalDateTime) travelInfo.get("beginTime"))
                 .dateEnd((LocalDateTime) travelInfo.get("endTime"))
-                .travelDuration((LocalTime) travelInfo.get("duration"))
+                .travelPrice(ticketPostRequest.getTravelPrice())
+                .travelDuration(String.valueOf(travelInfo.get("duration")))
                 .build();
 
         ticketDao.save(ticket);

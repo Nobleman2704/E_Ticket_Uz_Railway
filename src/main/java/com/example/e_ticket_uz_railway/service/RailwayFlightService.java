@@ -42,21 +42,26 @@ public class RailwayFlightService implements BaseService<RailwayFlightPostReques
                 .build();
     }
 
-    public BaseResponse<List<RailwayFlightGetResponse>> findAll() {
-        List<RailwayFlightEntity> railwayFlightEntities = railwayFlightDao.findAll();
-        if (railwayFlightEntities.isEmpty()){
-            return BaseResponse.<List<RailwayFlightGetResponse>>builder()
-                    .status(404)
-                    .message("There is not any railway flights")
-                    .build();
-        }
+//    public BaseResponse<List<RailwayFlightGetResponse>> findAll() {
+//        List<RailwayFlightEntity> railwayFlightEntities = railwayFlightDao.findAll();
+//        if (railwayFlightEntities.isEmpty()){
+//            return BaseResponse.<List<RailwayFlightGetResponse>>builder()
+//                    .status(404)
+//                    .message("There is not any railway flights")
+//                    .build();
+//        }
+//
+//        return BaseResponse.<List<RailwayFlightGetResponse>>builder()
+//                .status(404)
+//                .message(railwayFlightEntities.size() + " result(s) found")
+//                .data(modelMapper.map(railwayFlightEntities, new TypeToken<List<RailwayFlightGetResponse>>(){}
+//                        .getType()))
+//                .build();
+//    }
 
-        return BaseResponse.<List<RailwayFlightGetResponse>>builder()
-                .status(404)
-                .message(railwayFlightEntities.size() + " result(s) found")
-                .data(modelMapper.map(railwayFlightEntities, new TypeToken<List<RailwayFlightGetResponse>>(){}
-                        .getType()))
-                .build();
+    public List<RailwayFlightGetResponse> getAll(){
+        return modelMapper.map(railwayFlightDao.findAll(), new TypeToken<List<RailwayFlightGetResponse>>(){}
+                .getType());
     }
 
 
