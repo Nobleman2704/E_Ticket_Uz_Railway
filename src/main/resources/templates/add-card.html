@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Card page</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 70%;
+            color: #333;
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+            text-align: left;
+            background-color: #f2f2f2;
+        }
+
+        table th {
+            background-color: #3b3e40;
+            color: #fff;
+            padding: 8px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            border: 1px solid #ddd;
+        }
+
+        table td {
+            padding: 8px;
+            border: 1px solid #ddd;
+        }
+
+        select {
+            padding: 10px 30px;
+            margin: 1px 10px;
+            border-radius: 15px;
+            border: none;
+            background-color: #f2f2f2;
+            font-size: 16px;
+            color: #333;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+        }
+
+        button {
+            background-color: chocolate;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 15px;
+            font-size: 16px;
+            cursor: pointer;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+        }
+
+        input {
+            padding: 10px 30px;
+            border-radius: 15px;
+            border: none;
+            background-color: #f2f2f2;
+            font-size: 16px;
+            color: #333;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+        }
+        a {
+            text-decoration: none;
+            color: white;
+        }
+    </style>
+</head>
+<body style="background-color: lightslategrey">
+
+<p th:text="${message}"></p><br>
+
+<form action="/user/add_card" method="post" th:object="${card}">
+    <label><b>Card Number:</b>
+        <input type="text" required placeholder="Card number" name="cardNumber">
+    </label><br><br>
+    <label><b>Card Balance:</b>
+        <input type="number" required placeholder="balance" min="1" name="balance">
+    </label>
+    <input type="hidden" th:value="${userId}" name="userId">
+    <button>Add</button>
+</form>
+<br><br>
+<table>
+    <thead>
+    <tr>
+        <th>Card Number</th>
+        <th>Balance</th>
+        <th>Add Balance</th>
+    </tr>
+    </thead>
+    <tbody th:each="card: ${cards}">
+    <tr>
+        <td th:text="${card.cardNumber}"></td>
+        <td th:text="${card.balance}"></td>
+        <td>
+            <form action="/user/add_balance" method="post" th:object="${cardUpdate}">
+                <input type="hidden" th:value="${card.id}" name="cardId">
+                <input type="number" required placeholder="add amount" name="balance" min="1">
+                <button>Add</button>
+            </form>
+        </td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>

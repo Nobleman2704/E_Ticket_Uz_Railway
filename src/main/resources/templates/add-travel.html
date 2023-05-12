@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Add travel</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            color: #333;
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+            text-align: left;
+            background-color: #f2f2f2;
+        }
+
+        table th {
+            background-color: #3b3e40;
+            color: #fff;
+            padding: 8px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            border: 1px solid #ddd;
+        }
+
+        table td {
+            padding: 8px;
+            border: 1px solid #ddd;
+        }
+
+        select {
+            padding: 10px 30px;
+            margin: 1px 10px;
+            border-radius: 15px;
+            border: none;
+            background-color: #f2f2f2;
+            font-size: 16px;
+            color: #333;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+        }
+
+        button {
+            background-color: chocolate;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 15px;
+            font-size: 16px;
+            cursor: pointer;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+        }
+
+        b {
+            font-size: 20px;
+        }
+
+        input {
+            padding: 10px 30px;
+            border-radius: 15px;
+            border: none;
+            background-color: #f2f2f2;
+            font-size: 16px;
+            color: #333;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+        }
+    </style>
+</head>
+<body style="background-color: navajowhite">
+<p th:text="${message}"></p><br>
+
+<div th:if="${!travels.isEmpty()}">
+     <b>From:</b><b th:text="${cityFrom}"></b>
+    <b style="margin-left: 9%">Begin:</b><b th:text="${dateBegin}"></b>
+    <br><br>
+</div>
+
+<form action="/admin/add_travel" method="post" th:object="${travel}">
+    <input type="hidden" th:value="${railwayId}" name="railwayId">
+    <div th:if="${travels.isEmpty()}">
+        <label><b>From:</b>
+            <select name="cityFrom">
+                <option>ANDIJAN</option>
+                <option>FERGANA</option>
+                <option>NAMANGAN</option>
+                <option>TASHKENT</option>
+                <option>SIRDARYA</option>
+                <option>KASHKADARYA</option>
+                <option>SURKHANDARYA</option>
+                <option>JIZZAKH</option>
+                <option>SAMARKAND</option>
+                <option>NAVOIY</option>
+                <option>BUKHARA</option>
+                <option>KHOREZM</option>
+                <option>KARAKALPAKISTAN</option>
+            </select>
+        </label>
+        <label><b>Begin:</b>
+            <input type="datetime-local" name="dateBegin" required placeholder="beginning time">
+        </label><br><br>
+    </div>
+    <label><b>To:</b>
+        <select name="cityTo">
+            <option>ANDIJAN</option>
+            <option>FERGANA</option>
+            <option>NAMANGAN</option>
+            <option>TASHKENT</option>
+            <option>SIRDARYA</option>
+            <option>KASHKADARYA</option>
+            <option>SURKHANDARYA</option>
+            <option>JIZZAKH</option>
+            <option>SAMARKAND</option>
+            <option>NAVOIY</option>
+            <option>BUKHARA</option>
+            <option>KHOREZM</option>
+            <option>KARAKALPAKISTAN</option>
+        </select>
+    </label>
+    <label><b>End:</b>
+        <input type="datetime-local" name="dateEnd" required placeholder="ending time">
+    </label><br><br>
+    <label><b>Plascard Price:</b>
+        <input type="number" min="1" required placeholder="plascard price" name="plascardPrice">
+    </label>
+    <label><b>Kupe Price:</b>
+        <input type="number" min="1" required placeholder="kupe price" name="kupePrice">
+    </label>
+    <label><b>Vip Price:</b>
+        <input type="number" min="1" required placeholder="vip price" name="vipPrice">
+    </label>
+    <button>Add</button>
+</form>
+<br><br>
+<table>
+    <thead>
+    <tr>
+        <th>From</th>
+        <th></th>
+        <th>To</th>
+        <th>Begin</th>
+        <th>End</th>
+        <th>Price</th>
+    </tr>
+    </thead>
+    <tbody th:each="travel: ${travels}">
+    <tr>
+        <td th:text="${travel.cityFrom}"></td>
+        <td>➡️➡️</td>
+        <td th:text="${travel.cityTo}"></td>
+        <td th:text="${travel.dateBegin}"></td>
+        <td th:text="${travel.dateEnd}"></td>
+        <td>
+            <div>
+               <p>Plascard: <b th:text="${travel.plascardPrice}"></b></p>
+               <p>Kupe: <b th:text="${travel.kupePrice}"></b></p>
+               <p>Vip: <b th:text="${travel.vipPrice}"></b></p>
+            </div>
+        </td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin page</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            color: #333;
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+            text-align: left;
+            background-color: #f2f2f2;
+        }
+
+        table th {
+            background-color: #3b3e40;
+            color: #fff;
+            padding: 8px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            border: 1px solid #ddd;
+        }
+
+        table td {
+            padding: 8px;
+            border: 1px solid #ddd;
+        }
+
+        select {
+            padding: 10px 30px;
+            margin: 1px 10px;
+            border-radius: 15px;
+            border: none;
+            background-color: #f2f2f2;
+            font-size: 16px;
+            color: #333;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+        }
+
+        button {
+            background-color: chocolate;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 15px;
+            font-size: 16px;
+            cursor: pointer;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+        }
+
+        input {
+            padding: 10px 30px;
+            border-radius: 15px;
+            border: none;
+            background-color: #f2f2f2;
+            font-size: 16px;
+            color: #333;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+        }
+        a {
+            text-decoration: none;
+            color: white;
+        }
+    </style>
+</head>
+
+<p th:text="${message}"></p><br>
+
+<body style="background-color: slategrey">
+<form action="/admin/add_railway_flight" method="post" th:object="${railwayFlight}">
+    <label><h2>Add railway flight</h2> <br><b>Add railway name: </b>
+        <input style="margin-left: 194px" type="text" required placeholder="railway flight name"
+               name="railwayFlightName">
+    </label><br><br>
+    <label><b>How many days will railway flight be available: </b>
+        <input type="number" required placeholder="duration" name="duration" min="1">
+    </label>
+    <button>Add</button>
+</form>
+<br><br>
+<table>
+    <thead>
+    <tr>
+        <th>Railway flight name</th>
+        <th>Expiration Day</th>
+        <th>Add travel</th>
+        <th>Add Train carriage</th>
+    </tr>
+    </thead>
+    <tbody th:each="flights: ${railwayFlights}">
+    <tr>
+        <td th:text="${flights.railwayFlightName}"></td>
+        <td th:text="${flights.expirationDate}"></td>
+        <td>
+            <button ><a th:href="@{/admin/get_travels/{id}(id=${flights.id})}">Add travel</a> </button>
+        </td>
+        <td>
+            <button><a th:href="@{/admin/get_carriages/{id}(id=${flights.id})}">Add carriage</a></button>
+        </td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>

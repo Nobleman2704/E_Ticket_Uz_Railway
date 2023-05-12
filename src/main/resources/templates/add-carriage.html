@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Add carriage</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            color: #333;
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+            text-align: left;
+            background-color: #f2f2f2;
+        }
+
+        table th {
+            background-color: #3b3e40;
+            color: #fff;
+            padding: 8px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            border: 1px solid #ddd;
+        }
+
+        table td {
+            padding: 8px;
+            border: 1px solid #ddd;
+        }
+
+        select {
+            padding: 10px 30px;
+            margin: 1px 10px;
+            border-radius: 15px;
+            border: none;
+            background-color: bisque;
+            font-size: 16px;
+            color: #333;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+        }
+
+        button {
+            background-color: chocolate;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 15px;
+            font-size: 16px;
+            cursor: pointer;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+        }
+
+        input {
+            padding: 10px 30px;
+            border-radius: 15px;
+            border: none;
+            background-color: #f2f2f2;
+            font-size: 16px;
+            color: #333;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+        }
+    </style>
+</head>
+<body style="background-color: tan">
+<form action="/admin/add_carriage" method="post" th:object="${carriage}">
+    <input type="hidden" name="railwayId" th:value="${railwayId}">
+    <label><h2>Add Carriage</h2> <br><b style="font-size: 25px">Set carriage type: </b>
+        <select name="carriageType" required>
+            <option>PLASCARD</option>
+            <option>KUPE</option>
+            <option>VIP</option>
+        </select>
+    </label>
+    <button>Add</button>
+</form>
+<br><br>
+<table>
+    <thead>
+    <tr>
+        <th>Carriage Number</th>
+        <th>Carriage Type</th>
+    </tr>
+    </thead>
+    <tbody th:each="carriage: ${carriages}">
+    <tr>
+            <td th:text="${carriage.carriageNumber}"></td>
+            <td th:text="${carriage.carriageType}"></td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>
