@@ -19,6 +19,7 @@ public class CarriageGetResponse {
     private LocalDateTime created;
     private LocalDateTime updated;
     private boolean isDeleted;
+    private int carriageNumber;
     private CarriageType carriageType;
     private RailwayFlightEntity railways;
     private List<SeatEntity> seats;

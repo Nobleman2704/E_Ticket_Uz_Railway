@@ -15,6 +15,7 @@ import com.example.e_ticket_uz_railway.domain.entity.travel.TravelEntity;
 import com.example.e_ticket_uz_railway.domain.enums.CarriageType;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -39,7 +40,7 @@ public class TrainCarriageService implements BaseService<CarriagePostRequest, Ba
         carriageEntity.setRailways(railwayFlightEntity);
 
         Optional<List<TrainCarriageEntity>> optionalTrainCarriageEntityList = carriageDao
-                .findTrainCarriageEntitiesByRailwaysId(railwayId);
+                .findTrainCarriageEntitiesByRailwaysIdOrderByCreated(railwayId);
         if (optionalTrainCarriageEntityList.isEmpty()) {
             carriageEntity.setCarriageNumber(1);
         } else {
@@ -52,9 +53,10 @@ public class TrainCarriageService implements BaseService<CarriagePostRequest, Ba
 
         carriageDao.save(carriageEntity);
 
+
         return BaseResponse.<CarriageGetResponse>builder()
                 .status(200)
-                .message(carriageEntity.getCarriageType() + " has been added")
+                .message(carriageEntity.getCarriageType() + " carriage type has been added")
                 .data(modelMapper.map(carriageEntity, CarriageGetResponse.class))
                 .build();
     }
@@ -64,7 +66,7 @@ public class TrainCarriageService implements BaseService<CarriagePostRequest, Ba
         CarriageType carriageType = carriageEntity.getCarriageType();
         int amountOfSeats;
         switch (carriageType) {
-            case PLASKARD -> amountOfSeats = 15;
+            case PLASCARD -> amountOfSeats = 15;
             case KUPE -> amountOfSeats = 10;
             default -> amountOfSeats = 5;
         }
@@ -79,7 +81,7 @@ public class TrainCarriageService implements BaseService<CarriagePostRequest, Ba
                                                                          UUID railwayId) {
 
         List<TrainCarriageEntity> trainCarriageEntities = carriageDao
-                .findTrainCarriageEntitiesByRailwaysId(railwayId).get();
+                .findTrainCarriageEntitiesByRailwaysIdOrderByCreated(railwayId).get();
 
         LinkedList<TravelEntity> travelEntities = travelDao
                 .findTravelEntitiesByRailwaysIdOrderByCreated(railwayId).get();
@@ -94,7 +96,10 @@ public class TrainCarriageService implements BaseService<CarriagePostRequest, Ba
             List<SeatEntity> availableSeats = travelService.findAvailableSeats(travelInfo, trainCarriage.getId());
             if (availableSeats.size()!=0){
                 carriageSearchGetResponses.add(CarriageSearchGetResponse.builder()
+                                .railwayId(railwayId)
+                                .searchingInfo(searchingPostRequest)
                                 .carriageType(trainCarriage.getCarriageType())
+                                .carriageNumber(trainCarriage.getCarriageNumber())
                                 .travelPrice(getPriceByCarriageType(travelInfo, trainCarriage.getCarriageType()))
                                 .seats(availableSeats)
                         .build());
@@ -111,7 +116,7 @@ public class TrainCarriageService implements BaseService<CarriagePostRequest, Ba
     private Double getPriceByCarriageType(Map<String, Object> travelInfo, CarriageType carriageType) {
         Object price;
         switch (carriageType){
-            case PLASKARD -> price = travelInfo.get("plascardPrice");
+            case PLASCARD -> price = travelInfo.get("plascardPrice");
             case KUPE -> price = travelInfo.get("kupePrice");
             default -> price = travelInfo.get("vipPrice");
         }
@@ -126,5 +131,16 @@ public class TrainCarriageService implements BaseService<CarriagePostRequest, Ba
     @Override
     public BaseResponse<CarriageGetResponse> deleteById(UUID id) {
         return null;
+    }
+
+    public List<CarriageGetResponse> findCarriagesByRailwayFlightId(UUID railwayFlightId) {
+        Optional<List<TrainCarriageEntity>> carriages = carriageDao
+                .findTrainCarriageEntitiesByRailwaysIdOrderByCreated(railwayFlightId);
+
+        if (carriages.isEmpty()){
+            return Collections.emptyList();
+        }
+        return modelMapper.map(carriages.get(), new TypeToken<List<CarriageGetResponse>>(){}
+                .getType());
     }
 }
