@@ -16,6 +16,8 @@ import com.example.e_ticket_uz_railway.service.TrainCarriageService;
 import com.example.e_ticket_uz_railway.service.TravelService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -25,6 +27,8 @@ import java.util.UUID;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/user")
+@EnableMethodSecurity
+@PreAuthorize("hasRole('USER')")
 public class UserController {
 
     private final TravelService travelService;
@@ -44,6 +48,10 @@ public class UserController {
         return modelAndView;
     }
 
+    @RequestMapping("/user")
+    public ModelAndView user() {
+        return new ModelAndView("user-page");
+    }
 
     @GetMapping("get_user_cards")
     public ModelAndView getUserCards(HttpSession session) {

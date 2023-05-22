@@ -19,11 +19,11 @@ import java.util.UUID;
 public class BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private UUID id;
+    protected UUID id;
     @CreationTimestamp
-    private LocalDateTime created;
+    protected LocalDateTime created;
     @UpdateTimestamp
-    private LocalDateTime updated;
+    protected LocalDateTime updated;
     @Column(name = "is_deleted")
-    private boolean isDeleted;
+    protected boolean isDeleted;
 }

@@ -11,6 +11,8 @@ import com.example.e_ticket_uz_railway.service.RailwayFlightService;
 import com.example.e_ticket_uz_railway.service.TrainCarriageService;
 import com.example.e_ticket_uz_railway.service.TravelService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -20,8 +22,17 @@ import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("admin")
+@RequestMapping("/admin")
+@EnableMethodSecurity
+@PreAuthorize("hasRole('ADMIN')")
 public class AdminController {
+
+    @RequestMapping("/admin")
+    public ModelAndView admin() {
+        ModelAndView modelAndView = new ModelAndView("admin-page");
+        modelAndView.addObject("railwayFlights", railwayFlightService.getAll());
+        return modelAndView;
+    }
 
     private final RailwayFlightService railwayFlightService;
     private final TravelService travelService;
@@ -92,5 +103,4 @@ public class AdminController {
         modelAndView.addObject("carriages", carriages);
         return modelAndView;
     }
-
 }
