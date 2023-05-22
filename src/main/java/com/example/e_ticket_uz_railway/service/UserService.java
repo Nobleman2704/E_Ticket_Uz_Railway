@@ -5,11 +5,16 @@ import com.example.e_ticket_uz_railway.domain.dto.BaseResponse;
 import com.example.e_ticket_uz_railway.domain.dto.request.UserPostRequest;
 import com.example.e_ticket_uz_railway.domain.dto.response.UserGetResponse;
 import com.example.e_ticket_uz_railway.domain.entity.user.UserEntity;
+import com.example.e_ticket_uz_railway.domain.enums.UserRole;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Service;
 
-import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -18,11 +23,13 @@ import java.util.UUID;
 public class UserService implements BaseService<UserPostRequest, BaseResponse<UserGetResponse>> {
     private final UserDao userDao;
     private final ModelMapper modelMapper;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public BaseResponse<UserGetResponse> create(UserPostRequest userPostRequest) {
         UserEntity user = modelMapper.map(userPostRequest, UserEntity.class);
-
+        user.setUserRole(UserRole.ADMIN);
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         try {
             userDao.save(user);
         } catch (Exception e) {
@@ -39,7 +46,10 @@ public class UserService implements BaseService<UserPostRequest, BaseResponse<Us
                 .build();
     }
 
-    public BaseResponse<UserGetResponse> login(String email, String password) {
+    public BaseResponse<UserGetResponse> login(
+            String email,
+            String password) {
+
         Optional<UserEntity> userEntityByEmail = userDao.findUserEntityByEmail(email);
         if (userEntityByEmail.isEmpty())
             return BaseResponse.<UserGetResponse>builder()
@@ -51,7 +61,7 @@ public class UserService implements BaseService<UserPostRequest, BaseResponse<Us
         UserEntity user = userEntityByEmail.get();
 
 
-        if (Objects.equals(user.getPassword(), password)) {
+        if (passwordEncoder.matches(password, user.getPassword())) {
             if (user.isDeleted()) {
                 return BaseResponse.<UserGetResponse>builder()
                         .status(401)
